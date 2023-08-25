@@ -4,42 +4,49 @@
 #include <chrono>
 
 using namespace std;
-int MAX = 10;
 
-class RNG{
-public:
-    RNG() : gen(random_device()()) {}
-
-    double getRandom(){
-        uniform_real_distribution<double> dis(0,100.0);
-        double random = dis(gen);
-        return random;
+int main(int argc, char* argv[]) {
+    if (argc != 2)
+    {
+        std::cout << "Usage: " << argv[0] << " MAX size e.g. 100" << std::endl;
+        return EXIT_FAILURE;
     }
-private:
-    mt19937 gen;
-};
-
-int main() {
+    int MAX = atoi(argv[1]);
+    cout << "MAX: " << MAX << endl;
 
     //double A[MAX][MAX], x[MAX], y[MAX];
-    //vector<vector<double>> A;
-    double A[MAX][MAX];
-    vector<double> x(MAX);
-    vector<double> y(MAX);
-    RNG rng_;
+    double ** A = new double*[MAX];
+    A[0] = new double[MAX*MAX];
+    for(int i=1; i<MAX; i++){
+        A[i] = A[i-1] + MAX;
+    }
+
+    double * x = new double(MAX);
+    double * y = new double(MAX);
+    
+    // random
+    std::random_device rd;
+    std::default_random_engine eng(rd());
+    std::uniform_real_distribution<double> distr(0.0, 10.0);
 
     /* Initialize A and x, assign y = 0 */
     for(int i=0; i<MAX; i++){
-        x[i] = rng_.getRandom();
+        //x[i] = rng_.getRandom();
+        x[i] = distr(eng);
+        //x.push_back(distr(eng));
     }
 
     for(int i=0; i<MAX; i++){
         for(int j=0; j<MAX; j++){
-            A[i][j] = rng_.getRandom();
+            A[i][j] = distr(eng);
+            //A[i].push_back(distr(eng));
         }
     }
 
-    fill(y.begin(), y.end(), 0.0);
+    // fill(y.begin(), y.end(), 0.0);
+    for(int i=0; i<MAX; i++){
+        y[i] = 0.0;
+    }
     cout << "data inicializada" << endl;
 
     /* First pair of loops */
@@ -56,7 +63,10 @@ int main() {
         << " ns" << endl;
 
     /* Assign y = 0 */
-    fill(y.begin(), y.end(), 0.0);
+    //fill(y.begin(), y.end(), 0.0);
+    for(int i=0; i<MAX; i++){
+        y[i] = 0.0;
+    }
 
     /* Second pair of loops */
     start = chrono::steady_clock::now();
@@ -66,7 +76,10 @@ int main() {
         }
     }
     end = chrono::steady_clock::now();
+
     cout << "El segundo loop duro:" << endl;
     cout << chrono::duration_cast<chrono::nanoseconds>(end - start).count()
         << " ns" << endl;
+
+    return 0;
 }
