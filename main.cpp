@@ -2,6 +2,7 @@
 #include <vector>
 #include <random>
 #include <chrono>
+#include <cstring>
 
 using namespace std;
 
@@ -14,12 +15,13 @@ int main(int argc, char* argv[]) {
     int MAX = atoi(argv[1]);
     cout << "MAX: " << MAX << endl;
 
-    //double A[MAX][MAX], x[MAX], y[MAX];
+    //  double A[MAX][MAX], x[MAX], y[MAX];
     double ** A = new double*[MAX];
     A[0] = new double[MAX*MAX];
     for(int i=1; i<MAX; i++){
         A[i] = A[i-1] + MAX;
     }
+    memset(A[0], 0.0, MAX*MAX*sizeof(double));
 
     double * x = new double(MAX);
     double * y = new double(MAX);
@@ -31,22 +33,19 @@ int main(int argc, char* argv[]) {
 
     /* Initialize A and x, assign y = 0 */
     for(int i=0; i<MAX; i++){
-        //x[i] = rng_.getRandom();
         x[i] = distr(eng);
-        //x.push_back(distr(eng));
     }
 
     for(int i=0; i<MAX; i++){
         for(int j=0; j<MAX; j++){
             A[i][j] = distr(eng);
-            //A[i].push_back(distr(eng));
         }
     }
 
-    // fill(y.begin(), y.end(), 0.0);
     for(int i=0; i<MAX; i++){
         y[i] = 0.0;
     }
+    
     cout << "data inicializada" << endl;
 
     /* First pair of loops */
@@ -81,5 +80,9 @@ int main(int argc, char* argv[]) {
     cout << chrono::duration_cast<chrono::nanoseconds>(end - start).count()
         << " ns" << endl;
 
+    delete [] A[0];
+    delete [] A;
+    delete [] x;
+    delete [] y;
     return 0;
 }
