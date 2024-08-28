@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
         y[i] = 0.0;
     }
     
-    cout << "data inicializada" << endl;
+    cout << "data inicializada..." << endl;
 
     /* First pair of loops */
     auto start = chrono::steady_clock::now();
